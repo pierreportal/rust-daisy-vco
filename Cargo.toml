@@ -70,25 +70,25 @@ overflow-checks = true
 
 [[example]]
 name = "passthrough"
-path = examples/passthrough.rs"
+path = "examples/passthrough.rs"
 [[example]]
 name = "triangle_wave_tx"
-path = examples/triangle_wave_tx.rs"
+path = "examples/triangle_wave_tx.rs"
 [[example]]
 name = "blinky"
-path = examples/blinky.rs"
+path = "examples/blinky.rs"
 [[example]]
 name = "sdram"
-path = examples/sdram.rs"
+path = "examples/sdram.rs"
 [[example]]
 name = "flash"
-path = examples/flash.rs"
+path = "examples/flash.rs"
 [[example]]
 name = "usb_serial"
-path = examples/usb_serial.rs"
+path = "examples/usb_serial.rs"
 [[example]]
 name = "looper"
-path = examples/looper.rs"
+path = "examples/looper.rs"
 [[example]]
 name = "usb_uac"
-path = examples/usb_uac.rs"
+path = "examples/usb_uac.rs"
