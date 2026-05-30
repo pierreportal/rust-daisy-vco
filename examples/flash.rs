@@ -1,0 +1,52 @@
+#![no_std]
+#![no_main]
+
+use daisy_embassy::new_daisy_board;
+use defmt::{error, info};
+use embassy_executor::Spawner;
+use embassy_stm32::{bind_interrupts, dma, qspi};
+
+use {defmt_rtt as _, panic_probe as _};
+
+bind_interrupts!(
+    pub struct Irqs{
+        QUADSPI => qspi::InterruptHandler<embassy_stm32::peripherals::QUADSPI>;
+        MDMA => dma::InterruptHandler<embassy_stm32::peripherals::MDMA_CH0>;
+});
+
+#[embassy_executor::main]
+async fn main(_spawner: Spawner) {
+    let config = daisy_embassy::default_rcc();
+    let p = embassy_stm32::init(config);
+    let daisy_p = new_daisy_board!(p);
+
+    // We will be using the first 8000 bytes of the flash.
+    const ADDRESS: u32 = 0x00;
+    const SIZE: usize = 8000;
+
+    let mut flash = daisy_p.flash.build_async(p.MDMA_CH0, Irqs);
+
+    info!("uuid: {}", flash.read_uuid());
+    // Create an array of data to write.
+    let mut data: [u8; SIZE] = [0; SIZE];
+    for (i, x) in data.iter_mut().enumerate() {
+        *x = (i % 256) as u8;
+    }
+    info!("Write buffer: {:?}", data[0..32]);
+
+    // Write it to the flash memory.
+    info!("Writting to flash");
+    flash.write_async(ADDRESS, &data).await;
+
+    // Read it back.
+    info!("Reading from flash");
+    let mut buffer: [u8; SIZE] = [0; SIZE];
+    flash.read_async(ADDRESS, &mut buffer).await;
+    info!("Read buffer: {:?}", buffer[0..32]);
+
+    if data == buffer {
+        info!("Everything went as expected");
+    } else {
+        error!("Read value does not match what was written");
+    }
+}

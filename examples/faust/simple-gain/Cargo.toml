@@ -1,0 +1,68 @@
+[package]
+edition = "2024"
+name    = "simple-gain"
+
+[features]
+default = []
+std     = []
+
+[dependencies]
+faust-traits = { git = "https://codeberg.org/crop/blech.git", rev = "1493f2f5da93ef0cbb2a05baf4bf281ad97674f6", default-features = false }
+faust-ui     = { git = "https://codeberg.org/crop/blech.git", rev = "1493f2f5da93ef0cbb2a05baf4bf281ad97674f6", default-features = false }
+
+cortex-m-rt   = { version = "0.7.0", features = ["device"] }
+daisy-embassy = { path = "../../../../daisy-embassy", features = ["seed_1_1"] }
+defmt         = "1.0.1"
+libm          = "0.2.16"
+
+num-traits = { version = "0.2.19", default-features = false, features = [
+  "libm",
+] }
+strum = { version = "*", default-features = false, features = [
+  "derive",
+], git = "https://github.com/Peternator7/strum" }
+
+embassy-executor = { version = "0.7.0", features = [
+  "arch-cortex-m",
+  "defmt",
+  "executor-interrupt",
+  "executor-thread",
+  "task-arena-size-32768",
+] }
+embassy-sync = { version = "0.7.2", features = ["defmt"] }
+embassy-time = { version = "0.5.0" }
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+
+defmt-rtt = "1.0.0"
+cortex-m = { version = "0.7.6", features = ["inline-asm", "critical-section-single-core"] }
+
+[build-dependencies]
+faust-build    = { git = "https://codeberg.org/crop/blech.git", rev = "1493f2f5da93ef0cbb2a05baf4bf281ad97674f6" }
+faust-ui-build = { git = "https://codeberg.org/crop/blech.git", rev = "1493f2f5da93ef0cbb2a05baf4bf281ad97674f6" }
+quote          = "*"
+
+
+[patch.crates-io]
+embassy-stm32 = { git = "https://github.com/embassy-rs/embassy.git", rev = "70aa65871e26f087e0baaf8e737371a4d5fd6d20" }
+embassy-time = { git = "https://github.com/embassy-rs/embassy.git", rev = "70aa65871e26f087e0baaf8e737371a4d5fd6d20" }
+embassy-sync = { git = "https://github.com/embassy-rs/embassy.git", rev = "70aa65871e26f087e0baaf8e737371a4d5fd6d20" }
+embassy-futures = { git = "https://github.com/embassy-rs/embassy.git", rev = "70aa65871e26f087e0baaf8e737371a4d5fd6d20" }
+embassy-usb = { git = "https://github.com/embassy-rs/embassy.git", rev = "70aa65871e26f087e0baaf8e737371a4d5fd6d20" }
+
+[profile.release]
+codegen-units = 1
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 's'
+overflow-checks = false
+
+# cargo build/run
+[profile.dev]
+codegen-units = 1
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = 3
+overflow-checks = true
